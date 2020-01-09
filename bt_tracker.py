@@ -64,6 +64,7 @@ MQTT_AUTH = {
 }
 MQTT_STATE_PREFIX = cfg['mqtt']['state_prefix'] + "/" + LOCATION
 MQTT_STATE_TOPIC = MQTT_STATE_PREFIX + "/{}/state"
+MQTT_ATTR_TOPIC = MQTT_STATE_PREFIX + "/{}/attributes"
 
 ########### LOGGING SETUP #############
 LOG_FILE_NAME = cfg['logging']['file_name']
@@ -140,6 +141,13 @@ try:
                 logger.debug("Publishing to state topic: {}".format(MQTT_STATE_TOPIC.format(device['name'])))
                 logger.debug("Data to be published:\n {}".format(json.dumps(device)))
                 publish.single(MQTT_STATE_TOPIC.format(device['name']),
+                               payload=device['state'],
+                               hostname=MQTT_HOST_IP,
+                               client_id=MQTT_CLIENT_ID,
+                               auth=MQTT_AUTH,
+                               port=MQTT_PORT,
+                               protocol=mqtt.MQTTv311)
+                publish.single(MQTT_ATTR_TOPIC.format(device['name']),
                                payload=json.dumps(device),
                                hostname=MQTT_HOST_IP,
                                client_id=MQTT_CLIENT_ID,
